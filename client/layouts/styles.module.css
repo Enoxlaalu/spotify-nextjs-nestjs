@@ -1,0 +1,9 @@
+.layout {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    height: 100vh;
+}
+
+.page {
+    padding: 24px;
+}

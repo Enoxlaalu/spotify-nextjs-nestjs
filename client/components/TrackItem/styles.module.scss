@@ -1,0 +1,24 @@
+.track {
+ display: grid;
+ grid-template-columns: auto auto 1fr auto;
+ align-items: center;
+ grid-column-gap: 12px;
+ box-shadow:  1px 1px 0 2px rgb(black, 20%);
+ padding: 24px;
+ border-radius: 12px;
+
+ p {
+  font-size: 25px;
+  margin: 0;
+ }
+
+ span {
+  font-size: 18px;
+  color: gray;
+ }
+
+ .image {
+  max-width: 100%;
+  height: auto;
+ }
+}
