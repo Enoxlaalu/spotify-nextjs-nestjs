@@ -4,13 +4,18 @@ import React, { SyntheticEvent } from 'react'
 
 interface IPlayPauseButton {
   active: boolean
+  togglePlay: (e: SyntheticEvent) => void
 }
 
-const PlayPauseButton: React.FC<IPlayPauseButton> = ({ active }) => {
-  const stopPropagation = (e: SyntheticEvent) => e.stopPropagation()
-
+const PlayPauseButton: React.FC<IPlayPauseButton> = ({
+  active,
+  togglePlay,
+}) => {
+  const onClick = (e: SyntheticEvent) => {
+    togglePlay(e)
+  }
   return (
-    <IconButton onClick={stopPropagation}>
+    <IconButton onClick={onClick}>
       {active ? <Pause /> : <PlayArrow />}
     </IconButton>
   )

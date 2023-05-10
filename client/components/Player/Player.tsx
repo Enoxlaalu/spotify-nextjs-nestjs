@@ -1,14 +1,19 @@
 import PlayPauseButton from '@/components/PlayPauseButton/PlayPauseButton'
 import TrackProgress from '@/components/TrackProgress/TrackProgress'
 import { VolumeUp } from '@mui/icons-material'
-import React from 'react'
+import React, { useEffect } from 'react'
 import styles from './styles.module.scss'
+import { useAppDispatch, useAppSelector } from '@/hooks/redux'
+import { pauseTrack, playTrack } from '@/store/player'
 
 interface IPlayer {
   active: boolean
 }
 
-const Player: React.FC<IPlayer> = ({ active }) => {
+let audio: HTMLAudioElement
+
+const Player: React.FC<IPlayer> = () => {
+  const src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
   const track = {
     _id: '1',
     name: 'Track 1',
@@ -20,10 +25,31 @@ const Player: React.FC<IPlayer> = ({ active }) => {
     listens: 7,
     comments: [],
   }
+  const { active, currentTime, duration, pause, volume } = useAppSelector(
+    (state) => state.player,
+  )
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    if (!audio) {
+      audio = new Audio()
+      audio.src = src
+    }
+  }, [])
+
+  const togglePlay = () => {
+    if (pause) {
+      dispatch(playTrack())
+      audio.play()
+    } else {
+      dispatch(pauseTrack())
+      audio.pause()
+    }
+  }
 
   return (
     <div className={styles.player}>
-      <PlayPauseButton active={active} />
+      <PlayPauseButton active={!pause} togglePlay={togglePlay} />
       <div>
         <p>{track.name}</p>
         <span>{track.artist}</span>

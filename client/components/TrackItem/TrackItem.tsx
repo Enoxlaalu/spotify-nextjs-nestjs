@@ -1,8 +1,8 @@
 import { ITrack } from '@/types/tracks'
 import React, { SyntheticEvent } from 'react'
 import styles from './styles.module.scss'
-import { Icon, IconButton } from '@mui/material'
-import { Delete, Pause, PlayArrow } from '@mui/icons-material'
+import { IconButton } from '@mui/material'
+import { Delete } from '@mui/icons-material'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import PlayPauseButton from '@/components/PlayPauseButton/PlayPauseButton'
@@ -19,9 +19,11 @@ const TrackItem: React.FC<ITrackItem> = ({ track, active = false }) => {
 
   const stopPropagation = (e: SyntheticEvent) => e.stopPropagation()
 
+  const togglePlay = () => {}
+
   return (
     <div className={styles.track} onClick={onClick}>
-      <PlayPauseButton active={active} />
+      <PlayPauseButton active={active} togglePlay={togglePlay} />
       <Image
         className={styles.image}
         alt="trackImage"
