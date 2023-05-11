@@ -14,3 +14,7 @@ export interface ITrack {
   audio: string
   comments: IComment[]
 }
+
+export interface ITracksState {
+  tracks: ITrack[]
+}

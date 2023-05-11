@@ -6,6 +6,8 @@ import { Delete } from '@mui/icons-material'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import PlayPauseButton from '@/components/PlayPauseButton/PlayPauseButton'
+import { useAppDispatch } from '@/hooks/redux'
+import { playTrack, setActive } from '@/store/player'
 
 interface ITrackItem {
   track: ITrack
@@ -14,12 +16,16 @@ interface ITrackItem {
 
 const TrackItem: React.FC<ITrackItem> = ({ track, active = false }) => {
   const router = useRouter()
+  const dispatch = useAppDispatch()
 
   const onClick = () => router.push(`/tracks/${track._id}`)
 
   const stopPropagation = (e: SyntheticEvent) => e.stopPropagation()
 
-  const togglePlay = () => {}
+  const togglePlay = (e: SyntheticEvent) => {
+    e.stopPropagation()
+    dispatch(setActive(track))
+  }
 
   return (
     <div className={styles.track} onClick={onClick}>
@@ -27,7 +33,7 @@ const TrackItem: React.FC<ITrackItem> = ({ track, active = false }) => {
       <Image
         className={styles.image}
         alt="trackImage"
-        src={track.picture}
+        src={`http://localhost:5000/${track.picture}`}
         width={70}
         height={70}
       />

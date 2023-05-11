@@ -8,7 +8,7 @@ const initialState: IPlayerState = {
   currentTime: 0,
   active: null,
   duration: 0,
-  volume: 0,
+  volume: 50,
 }
 
 const playerSlice = createSlice({
@@ -22,21 +22,21 @@ const playerSlice = createSlice({
       return { ...state, pause: false }
     },
     setCurrentTime: (state, action: PayloadAction<number>) => {
-      state = { ...state, currentTime: action.payload }
+      return { ...state, currentTime: action.payload }
     },
     setVolume: (state, action: PayloadAction<number>) => {
-      state = { ...state, volume: action.payload }
+      return { ...state, volume: action.payload }
     },
     setDuration: (state, action: PayloadAction<number>) => {
-      state = { ...state, duration: action.payload }
+      return { ...state, duration: action.payload }
     },
     setActive: (state, action: PayloadAction<ITrack>) => {
-      state = { ...state, active: action.payload, duration: 0, currentTime: 0 }
+      return { ...state, active: action.payload, duration: 0, currentTime: 0 }
     },
   },
   extraReducers: {
     [HYDRATE]: (state, action) => {
-      console.log('HYDRATE', state, action.payload)
+      // console.log('HYDRATE', state, action.payload)
       return {
         ...state,
         ...action.payload.player,
@@ -45,6 +45,13 @@ const playerSlice = createSlice({
   },
 })
 
-export const { pauseTrack, playTrack } = playerSlice.actions
+export const {
+  pauseTrack,
+  playTrack,
+  setVolume,
+  setActive,
+  setCurrentTime,
+  setDuration,
+} = playerSlice.actions
 
 export default playerSlice

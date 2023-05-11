@@ -1,10 +1,16 @@
 import PlayPauseButton from '@/components/PlayPauseButton/PlayPauseButton'
 import TrackProgress from '@/components/TrackProgress/TrackProgress'
 import { VolumeUp } from '@mui/icons-material'
-import React, { useEffect } from 'react'
+import React, { ChangeEvent, useEffect } from 'react'
 import styles from './styles.module.scss'
 import { useAppDispatch, useAppSelector } from '@/hooks/redux'
-import { pauseTrack, playTrack } from '@/store/player'
+import {
+  pauseTrack,
+  playTrack,
+  setCurrentTime,
+  setDuration,
+  setVolume,
+} from '@/store/player'
 
 interface IPlayer {
   active: boolean
@@ -13,29 +19,36 @@ interface IPlayer {
 let audio: HTMLAudioElement
 
 const Player: React.FC<IPlayer> = () => {
-  const src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
-  const track = {
-    _id: '1',
-    name: 'Track 1',
-    artist: 'Artist',
-    text: 'Text',
-    audio: 'http:/localhost:5000/audio/audio.mp3',
-    picture:
-      'http:/localhost:5000/image/664e7a41-b62d-4e2b-8d1d-b2a68aeda8e7.jpg',
-    listens: 7,
-    comments: [],
-  }
   const { active, currentTime, duration, pause, volume } = useAppSelector(
     (state) => state.player,
   )
   const dispatch = useAppDispatch()
 
+  const setAudio = () => {
+    if (active) {
+      audio.src = `http://localhost:5000/${active.audio}`
+      audio.volume = volume / 100
+      audio.onloadedmetadata = () => {
+        dispatch(setDuration(Math.ceil(audio.duration)))
+      }
+      audio.ontimeupdate = () => {
+        dispatch(setCurrentTime(Math.ceil(audio.currentTime)))
+      }
+    }
+  }
+
   useEffect(() => {
     if (!audio) {
       audio = new Audio()
-      audio.src = src
     }
-  }, [])
+
+    if (active) {
+      setAudio()
+      togglePlay()
+    }
+  }, [active])
+
+  if (!active) return null
 
   const togglePlay = () => {
     if (pause) {
@@ -47,16 +60,40 @@ const Player: React.FC<IPlayer> = () => {
     }
   }
 
+  const changeVolume = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+
+    audio.volume = Number(value) / 100
+    dispatch(setVolume(Number(value)))
+  }
+
+  const searchInTrack = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+
+    audio.currentTime = Number(value)
+    dispatch(setCurrentTime(Number(value)))
+  }
+
   return (
     <div className={styles.player}>
       <PlayPauseButton active={!pause} togglePlay={togglePlay} />
       <div>
-        <p>{track.name}</p>
-        <span>{track.artist}</span>
+        <p>{active.name}</p>
+        <span>{active.artist}</span>
       </div>
-      <TrackProgress left={0} right={100} />
+      <TrackProgress
+        left={0}
+        right={duration}
+        onChange={searchInTrack}
+        value={currentTime}
+      />
       <VolumeUp />
-      <TrackProgress left={0} right={100} />
+      <TrackProgress
+        left={0}
+        right={100}
+        onChange={changeVolume}
+        value={volume}
+      />
     </div>
   )
 }
