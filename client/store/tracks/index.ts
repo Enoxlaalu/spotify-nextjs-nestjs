@@ -8,9 +8,20 @@ const initialState: ITracksState = {
 
 export const fetchTracks = createAsyncThunk(
   'tracksReducer/fetchTracks',
-  // Declare the type your function argument here:
   async () => {
     const response = await fetch(`http://localhost:5000/tracks`)
+    const json = await response.json()
+
+    return json as ITrack[]
+  },
+)
+
+export const searchTracks = createAsyncThunk(
+  'tracksReducer/fetchTracks',
+  async (query: string) => {
+    const response = await fetch(
+      `http://localhost:5000/tracks/search?query=${query}`,
+    )
     const json = await response.json()
 
     return json as ITrack[]

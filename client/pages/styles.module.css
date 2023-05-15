@@ -6,6 +6,7 @@
     justify-items: center;
 }
 
-p {
+.body * {
     margin: 0;
+    padding: 0;
 }

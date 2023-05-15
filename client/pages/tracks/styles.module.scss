@@ -1,36 +1,36 @@
-.trackPage {
+.artistInfo {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-column-gap: 12px;
+  padding: 24px;
+
+  img {
+    object-fit: cover;
+  }
+
+  .trackInfo {
     display: grid;
-    grid-template-columns: auto 1fr;
-    grid-column-gap: 12px;
-    padding: 24px;
+    align-content: start;
+    grid-row-gap: 12px;
 
-    img {
-        object-fit: cover;
+    h2 {
+      margin: 0;
+      font-size: 25px;
     }
 
-    .trackInfo {
-        display: grid;
-        align-content: start;
-        grid-row-gap: 12px;
-        
-        h2 {
-            margin: 0;
-            font-size: 25px;
-        }
-    
-        h3 {
-            margin: 0;
-            font-size: 20px;
-        }
-    
-        p {
-            margin: 0;
-            font-size: 18px;
-        }
+    h3 {
+      margin: 0;
+      font-size: 20px;
     }
+
+    p {
+      margin: 0;
+      font-size: 18px;
+    }
+  }
 }
 
 .createPage {
-    display: grid;
-    grid-row-gap: 16px;
+  display: grid;
+  grid-row-gap: 16px;
 }

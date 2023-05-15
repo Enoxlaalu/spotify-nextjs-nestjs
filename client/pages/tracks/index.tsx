@@ -5,59 +5,29 @@ import React from 'react'
 import { ITrack } from '@/types/tracks'
 import TrackList from '@/components/TrackLIst/TrackList'
 import { AppDispatch, wrapper } from '@/store'
-import { fetchTracks } from '@/store/tracks'
-import { useAppSelector } from '@/hooks/redux'
+import { fetchTracks, searchTracks } from '@/store/tracks'
+import { useAppDispatch, useAppSelector } from '@/hooks/redux'
+import Input from '@/components/Input/Input'
 
 const Index = () => {
   const router = useRouter()
-  const onClick = () => router.push('/tracks/create')
+  const dispatch = useAppDispatch()
 
-  const src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+  const onClick = () => router.push('/tracks/create')
 
   const { tracks } = useAppSelector((state) => state.tracksReducer)
 
-  console.log('tracks', tracks)
+  const onChange = (e) => {
+    const value = e.target.value
 
-  // const tracks: ITrack[] = [
-  //   {
-  //     _id: '1',
-  //     name: 'Track 1',
-  //     artist: 'Artist',
-  //     text: 'Text',
-  //     audio: src,
-  //     picture:
-  //       'http:/localhost:5000/image/5b39dd59-40e6-41bf-932b-a2a1283b53a8.jpg',
-  //     listens: 7,
-  //     comments: [],
-  //   },
-  //   {
-  //     _id: '2',
-  //     name: 'Track 2',
-  //     artist: 'Artist',
-  //     text: 'Text',
-  //     audio: 'http:/localhost:5000/audio/audio.mp3',
-  //     picture:
-  //       'http:/localhost:5000/image/5b39dd59-40e6-41bf-932b-a2a1283b53a8.jpg',
-  //     listens: 7,
-  //     comments: [],
-  //   },
-  //   {
-  //     _id: '3',
-  //     name: 'Track 3',
-  //     artist: 'Artist',
-  //     text: 'Text',
-  //     audio: 'http:/localhost:5000/audio/audio.mp3',
-  //     picture:
-  //       'http:/localhost:5000/image/5b39dd59-40e6-41bf-932b-a2a1283b53a8.jpg',
-  //     listens: 7,
-  //     comments: [],
-  //   },
-  // ]
+    dispatch(searchTracks(value))
+  }
 
   return (
     <Layout>
       <h2>Track list</h2>
       <Button text="Add new track" onClick={onClick} />
+      <Input id="searchTracks" label="SearchTracks" onChange={onChange} />
       <TrackList tracks={tracks} />
     </Layout>
   )

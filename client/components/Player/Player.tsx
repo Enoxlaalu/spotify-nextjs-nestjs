@@ -12,13 +12,9 @@ import {
   setVolume,
 } from '@/store/player'
 
-interface IPlayer {
-  active: boolean
-}
-
 let audio: HTMLAudioElement
 
-const Player: React.FC<IPlayer> = () => {
+const Player = () => {
   const { active, currentTime, duration, pause, volume } = useAppSelector(
     (state) => state.player,
   )
