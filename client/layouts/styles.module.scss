@@ -1,0 +1,39 @@
+.layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  height: 100vh;
+}
+
+.page {
+  padding: 24px;
+}
+
+.navigation {
+  border-right: 1px solid #ccc;
+
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+
+    li {
+      padding: 12px 48px;
+      border-bottom: 1px solid #ccc;
+      font-size: 24px;
+      color: #000;
+      transition: 0.3s;
+      cursor: pointer;
+
+      &.active,
+      &:hover {
+        background-color: blueviolet;
+        color: white;
+      }
+    }
+
+    a {
+      text-decoration: none;
+      color: currentColor;
+    }
+  }
+}

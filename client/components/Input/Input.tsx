@@ -7,7 +7,7 @@ interface IInput {
   onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
 }
 
-const Input: React.FC<IInput> = ({ id, label, textarea, onChange, value }) => {
+const Input: React.FC<IInput> = ({ id, label, textarea, onChange }) => {
   return (
     <div>
       <label htmlFor={id}>{label}</label>

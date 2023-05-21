@@ -1,6 +1,6 @@
 import React from 'react'
 import { useRouter } from 'next/router'
-import styles from './styles.module.css'
+import styles from './styles.module.scss'
 import Player from '@/components/Player/Player'
 import Head from 'next/head'
 
@@ -44,13 +44,21 @@ const Layout: React.FC<ILayout> = ({ children, title, description }) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <div className={styles.layout}>
-        <nav>
+        <nav className={styles.navigation}>
           <ul>
-            {pages.map((page) => (
-              <li key={page.id} onClick={() => router.push(page.path)}>
-                <a href={page.path}>{page.title}</a>
-              </li>
-            ))}
+            {pages.map((page) => {
+              const active = page.path === router.pathname
+
+              return (
+                <li
+                  key={page.id}
+                  onClick={() => router.push(page.path)}
+                  className={active ? styles.active : ''}
+                >
+                  <a href={page.path}>{page.title}</a>
+                </li>
+              )
+            })}
           </ul>
         </nav>
         <main className={styles.page}>{children}</main>

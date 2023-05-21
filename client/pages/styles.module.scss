@@ -1,0 +1,21 @@
+.body {
+  display: grid;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  justify-items: center;
+
+  h1 {
+    font-size: 48px;
+    margin-bottom: 24px;
+  }
+
+  h3 {
+    font-size: 36px;
+  }
+}
+
+.body * {
+  margin: 0;
+  padding: 0;
+}
