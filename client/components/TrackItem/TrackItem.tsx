@@ -7,7 +7,8 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import PlayPauseButton from '@/components/PlayPauseButton/PlayPauseButton'
 import { useAppDispatch } from '@/hooks/redux'
-import { setActive } from '@/store/player'
+import { API_URL } from '@/config/api'
+import { setActive, playTrack } from '@/store/player'
 import { deleteTrack } from '@/store/tracks'
 
 interface ITrackItem {
@@ -23,12 +24,14 @@ const TrackItem: React.FC<ITrackItem> = ({ track, active = false }) => {
 
   const onDelete = (e: SyntheticEvent) => {
     e.stopPropagation()
+    if (!window.confirm(`Delete "${track.name}"?`)) return
     dispatch(deleteTrack(track._id))
   }
 
   const togglePlay = (e: SyntheticEvent) => {
     e.stopPropagation()
     dispatch(setActive(track))
+    dispatch(playTrack())
   }
 
   return (
@@ -37,17 +40,16 @@ const TrackItem: React.FC<ITrackItem> = ({ track, active = false }) => {
       <Image
         className={styles.image}
         alt="trackImage"
-        src={`http://localhost:5000/${track.picture}`}
-        width={70}
-        height={70}
+        src={`${API_URL}/${track.picture}`}
+        width={56}
+        height={56}
       />
-      <div>
+      <div className={styles.info}>
         <p>{track.name}</p>
         <span>{track.artist}</span>
       </div>
-      {active && <span>02:32 / 03:44</span>}
-      <IconButton onClick={onDelete}>
-        <Delete />
+      <IconButton className={styles.deleteBtn} onClick={onDelete}>
+        <Delete fontSize="small" />
       </IconButton>
     </div>
   )

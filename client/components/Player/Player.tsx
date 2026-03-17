@@ -1,7 +1,7 @@
 import PlayPauseButton from '@/components/PlayPauseButton/PlayPauseButton'
 import TrackProgress from '@/components/TrackProgress/TrackProgress'
 import { VolumeUp } from '@mui/icons-material'
-import React, { ChangeEvent, useEffect } from 'react'
+import React, { ChangeEvent, useEffect, useRef } from 'react'
 import styles from './styles.module.scss'
 import { useAppDispatch, useAppSelector } from '@/hooks/redux'
 import {
@@ -11,42 +11,18 @@ import {
   setDuration,
   setVolume,
 } from '@/store/player'
-
-let audio: HTMLAudioElement
+import { API_URL } from '@/config/api'
 
 const Player = () => {
   const { active, currentTime, duration, pause, volume } = useAppSelector(
     (state) => state.player,
   )
   const dispatch = useAppDispatch()
-
-  const setAudio = () => {
-    if (active) {
-      audio.src = `http://localhost:5000/${active.audio}`
-      audio.volume = volume / 100
-      audio.onloadedmetadata = () => {
-        dispatch(setDuration(Math.ceil(audio.duration)))
-      }
-      audio.ontimeupdate = () => {
-        dispatch(setCurrentTime(Math.ceil(audio.currentTime)))
-      }
-    }
-  }
-
-  useEffect(() => {
-    if (!audio) {
-      audio = new Audio()
-    }
-
-    if (active) {
-      setAudio()
-      togglePlay()
-    }
-  }, [active])
-
-  if (!active) return null
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const togglePlay = () => {
+    const audio = audioRef.current
+    if (!audio) return
     if (pause) {
       dispatch(playTrack())
       audio.play()
@@ -56,40 +32,66 @@ const Player = () => {
     }
   }
 
-  const changeVolume = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
+  useEffect(() => {
+    if (!audioRef.current) {
+      audioRef.current = new Audio()
+    }
+    const audio = audioRef.current
 
-    audio.volume = Number(value) / 100
-    dispatch(setVolume(Number(value)))
+    if (active) {
+      audio.src = `${API_URL}/${active.audio}`
+      audio.volume = volume / 100
+      audio.onloadedmetadata = () => {
+        dispatch(setDuration(Math.ceil(audio.duration)))
+      }
+      audio.ontimeupdate = () => {
+        dispatch(setCurrentTime(Math.ceil(audio.currentTime)))
+      }
+      dispatch(playTrack())
+      audio.play()
+    }
+  }, [active]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const changeVolume = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value)
+    if (audioRef.current) audioRef.current.volume = value / 100
+    dispatch(setVolume(value))
   }
 
   const searchInTrack = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-
-    audio.currentTime = Number(value)
-    dispatch(setCurrentTime(Number(value)))
+    const value = Number(e.target.value)
+    if (audioRef.current) audioRef.current.currentTime = value
+    dispatch(setCurrentTime(value))
   }
+
+  if (!active) return null
 
   return (
     <div className={styles.player}>
-      <PlayPauseButton active={!pause} togglePlay={togglePlay} />
-      <div>
-        <p>{active.name}</p>
-        <span>{active.artist}</span>
+      <div className={styles.trackInfo}>
+        <div className={styles.meta}>
+          <p className={styles.name}>{active.name}</p>
+          <span className={styles.artist}>{active.artist}</span>
+        </div>
       </div>
-      <TrackProgress
-        left={0}
-        right={duration}
-        onChange={searchInTrack}
-        value={currentTime}
-      />
-      <VolumeUp />
-      <TrackProgress
-        left={0}
-        right={100}
-        onChange={changeVolume}
-        value={volume}
-      />
+      <div className={styles.controls}>
+        <PlayPauseButton active={!pause} togglePlay={togglePlay} />
+        <TrackProgress
+          left={0}
+          right={duration}
+          onChange={searchInTrack}
+          value={currentTime}
+        />
+      </div>
+      <div className={styles.volumeControl}>
+        <VolumeUp fontSize="small" />
+        <TrackProgress
+          left={0}
+          right={100}
+          onChange={changeVolume}
+          value={volume}
+        />
+      </div>
     </div>
   )
 }

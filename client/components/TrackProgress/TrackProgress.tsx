@@ -1,4 +1,5 @@
 import React, { ChangeEvent } from 'react'
+import styles from './styles.module.scss'
 
 interface ITrackProgress {
   left: number
@@ -14,7 +15,7 @@ const TrackProgress: React.FC<ITrackProgress> = ({
   value,
 }) => {
   return (
-    <div>
+    <div className={styles.wrapper}>
       <input
         type="range"
         min={left}

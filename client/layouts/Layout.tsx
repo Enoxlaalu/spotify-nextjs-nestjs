@@ -1,20 +1,13 @@
 import React from 'react'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import styles from './styles.module.scss'
 import Player from '@/components/Player/Player'
 import Head from 'next/head'
 
 const pages = [
-  {
-    id: 'main',
-    title: 'Main Page',
-    path: '/',
-  },
-  {
-    id: 'tracks',
-    title: 'Track List',
-    path: '/tracks',
-  },
+  { id: 'main', title: 'Main Page', path: '/' },
+  { id: 'tracks', title: 'Track List', path: '/tracks' },
 ]
 
 interface ILayout {
@@ -29,7 +22,7 @@ const Layout: React.FC<ILayout> = ({ children, title, description }) => {
   return (
     <>
       <Head>
-        <title>{title || 'Spotify clone'}</title>
+        <title>{title || 'Musify'}</title>
         <meta
           name="description"
           content={`This is a Spotify clone app. You can add your favorite tracks and comments to them. ${description}`}
@@ -40,17 +33,13 @@ const Layout: React.FC<ILayout> = ({ children, title, description }) => {
       </Head>
       <div className={styles.layout}>
         <nav className={styles.navigation}>
+          <div className={styles.logo}>♫ Musify</div>
           <ul>
             {pages.map((page) => {
               const active = page.path === router.pathname
-
               return (
-                <li
-                  key={page.id}
-                  onClick={() => router.push(page.path)}
-                  className={active ? styles.active : ''}
-                >
-                  <a href={page.path}>{page.title}</a>
+                <li key={page.id} className={active ? styles.active : ''}>
+                  <Link href={page.path}>{page.title}</Link>
                 </li>
               )
             })}

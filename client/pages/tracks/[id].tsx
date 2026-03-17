@@ -8,6 +8,7 @@ import { GetServerSideProps } from 'next'
 import Input from '@/components/Input/Input'
 import useInput from '@/hooks/useInput'
 import { ITrack } from '@/types/tracks'
+import { API_URL } from '@/config/api'
 
 interface ITrackPage {
   serverTrack: ITrack
@@ -22,54 +23,64 @@ const TrackPage: React.FC<ITrackPage> = ({ serverTrack }) => {
   const goBack = () => router.push('/tracks')
 
   const addComment = async () => {
-    const res = await fetch('http://localhost:5000/tracks/comment', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: username.value,
-        text: comment.value,
-        trackId: track._id,
-      }),
-    })
-
-    const data = await res.json()
-
-    setTrack({ ...track, comments: [...track.comments, data] })
+    try {
+      const res = await fetch(`${API_URL}/tracks/comment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: username.value,
+          text: comment.value,
+          trackId: track._id,
+        }),
+      })
+      if (!res.ok) throw new Error('Failed to post comment')
+      const data = await res.json()
+      setTrack({ ...track, comments: [...track.comments, data] })
+    } catch (err) {
+      alert('Failed to post comment. Please try again.')
+    }
   }
 
   return (
     <Layout>
-      <Button text="Back to list" onClick={goBack} />
-      <div>
-        <div className={styles.artistInfo}>
-          <Image
-            src={`http://localhost:5000/${track.picture}`}
-            width={200}
-            height={200}
-            alt="Track image"
-          />
-          <div className={styles.trackInfo}>
-            <h3>Artist - {track.artist}</h3>
-            <h2>Track name - {track.name}</h2>
-            <p>Listens count: {track.listens}</p>
+      <Button text="← Back to list" onClick={goBack} />
+
+      <div className={styles.artistInfo}>
+        <Image
+          src={`${API_URL}/${track.picture}`}
+          width={200}
+          height={200}
+          alt="Track image"
+        />
+        <div className={styles.trackInfo}>
+          <h3>{track.artist}</h3>
+          <h2>{track.name}</h2>
+          <p>{track.listens} listens</p>
+        </div>
+      </div>
+
+      <div className={styles.section}>
+        <h4>Song lyrics</h4>
+        <p className={styles.lyrics}>{track.text}</p>
+      </div>
+
+      <div className={styles.section}>
+        <h4>Add comment</h4>
+        <div className={styles.commentForm}>
+          <Input id="username" label="Your Name" {...username} />
+          <Input id="comment" label="Your Comment" {...comment} textarea={3} />
+          <Button text="Post comment" onClick={addComment} />
+        </div>
+      </div>
+
+      <div className={styles.section}>
+        <h4>Comments</h4>
+        {track.comments.map((c) => (
+          <div key={c._id} className={styles.comment}>
+            <p>{c.username}</p>
+            <span>{c.text}</span>
           </div>
-        </div>
-        <h4>Song lyrics:</h4>
-        <p>{track.text}</p>
-        <h4>Add comment:</h4>
-        <Input id="username" label="Your Name" {...username} />
-        <Input id="comment" label="Your Comment" {...comment} textarea={3} />
-        <Button text="Add comment" onClick={addComment} />
-        <div>
-          {track.comments.map((c) => (
-            <div key={c._id}>
-              <p>{c.username}</p>
-              <span>{c.text}</span>
-            </div>
-          ))}
-        </div>
+        ))}
       </div>
     </Layout>
   )
@@ -79,7 +90,7 @@ export default TrackPage
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   try {
-    const res = await fetch('http://localhost:5000/tracks/' + params?.id)
+    const res = await fetch(`${API_URL}/tracks/${params?.id}`)
     if (!res.ok) {
       return { notFound: true }
     }

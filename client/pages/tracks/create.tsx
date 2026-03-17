@@ -7,10 +7,11 @@ import FileUpload from '@/components/FileUpload/FileUpload'
 import useInput from '@/hooks/useInput'
 import Input from '@/components/Input/Input'
 import { useRouter } from 'next/router'
+import { API_URL } from '@/config/api'
 
 const Create = () => {
   const router = useRouter()
-  const [activeStep, setActiveStep] = useState(1)
+  const [activeStep, setActiveStep] = useState(0)
   const [image, setImage] = useState<File | null>(null)
   const [audio, setAudio] = useState<File | null>(null)
   const trackName = useInput('')
@@ -19,13 +20,14 @@ const Create = () => {
 
   const goBack = () => setActiveStep(activeStep - 1)
   const goForward = () => {
-    if (activeStep === 1) {
-      if (!trackName.value || !artist.value) return alert('Fill in track name and artist')
+    if (activeStep === 0) {
+      if (!trackName.value || !artist.value)
+        return alert('Fill in track name and artist')
+      setActiveStep(1)
+    } else if (activeStep === 1) {
+      if (!image) return alert('Please upload a cover image')
       setActiveStep(2)
     } else if (activeStep === 2) {
-      if (!image) return alert('Please upload a cover image')
-      setActiveStep(3)
-    } else if (activeStep === 3) {
       if (!audio) return alert('Please upload an audio file')
 
       const formData = new FormData()
@@ -35,32 +37,42 @@ const Create = () => {
       formData.append('picture', image)
       formData.append('audio', audio)
 
-      fetch('http://localhost:5000/tracks', {
+      fetch(`${API_URL}/tracks`, {
         method: 'POST',
         body: formData,
       })
-        .then(() => router.push('/tracks'))
-        .catch((err) => console.log(err))
+        .then((res) => {
+          if (!res.ok) throw new Error('Upload failed')
+          router.push('/tracks')
+        })
+        .catch(() => alert('Failed to create track. Please try again.'))
     }
   }
 
   const renderStep = () => {
     switch (activeStep) {
-      case 1:
+      case 0:
         return (
-          <div>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+          >
             <Input id="name" label="Track Name" {...trackName} />
             <Input id="artist" label="Artist Name" {...artist} />
-            <Input id="comment" label="Comment" textarea={3} {...comment} />
+            <Input
+              id="comment"
+              label="Lyrics / Description"
+              textarea={4}
+              {...comment}
+            />
           </div>
         )
-      case 2:
+      case 1:
         return (
           <FileUpload accept="image/*" setFile={setImage}>
             <Button text="Upload cover" />
           </FileUpload>
         )
-      case 3:
+      case 2:
         return (
           <FileUpload accept="audio/*" setFile={setAudio}>
             <Button text="Upload track" />
@@ -72,12 +84,13 @@ const Create = () => {
   return (
     <Layout>
       <div className={styles.createPage}>
+        <h2>Add new track</h2>
         <StepsWrapper activeStep={activeStep} />
         {renderStep()}
-        <div>
-          <Button text="Back" onClick={goBack} disabled={activeStep === 1} />
+        <div className={styles.actions}>
+          <Button text="Back" onClick={goBack} disabled={activeStep === 0} />
           <Button
-            text={activeStep === 3 ? 'Create' : 'Next'}
+            text={activeStep === 2 ? '✓ Create track' : 'Next →'}
             onClick={goForward}
           />
         </div>

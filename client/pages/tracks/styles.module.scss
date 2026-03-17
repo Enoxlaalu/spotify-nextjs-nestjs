@@ -1,41 +1,118 @@
 .title {
-  font-size: 36px;
+  font-size: 32px;
+  font-weight: 700;
   margin-bottom: 24px;
+  letter-spacing: -0.5px;
 }
 
 .artistInfo {
   display: grid;
   grid-template-columns: auto 1fr;
-  grid-column-gap: 12px;
-  padding: 24px;
+  gap: 24px;
+  padding: 32px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-lg);
+  margin-bottom: 32px;
 
   img {
     object-fit: cover;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
   }
 
   .trackInfo {
-    display: grid;
-    align-content: start;
-    grid-row-gap: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: center;
 
     h2 {
-      margin: 0;
-      font-size: 25px;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
     }
 
     h3 {
-      margin: 0;
-      font-size: 20px;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-secondary);
     }
 
     p {
-      margin: 0;
-      font-size: 18px;
+      font-size: 14px;
+      color: var(--text-muted);
     }
   }
 }
 
+.section {
+  margin-top: 32px;
+
+  h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 16px;
+  }
+}
+
+.lyrics {
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.commentForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 480px;
+}
+
+.comment {
+  padding: 16px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-md);
+  margin-bottom: 8px;
+
+  p {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  span {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+}
+
 .createPage {
-  display: grid;
-  grid-row-gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 480px;
+
+  h2 {
+    font-size: 28px;
+    font-weight: 700;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+@media (max-width: 600px) {
+  .artistInfo {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
 }

@@ -1,6 +1,6 @@
 import { Pause, PlayArrow } from '@mui/icons-material'
-import { IconButton } from '@mui/material'
 import React, { SyntheticEvent } from 'react'
+import styles from './styles.module.scss'
 
 interface IPlayPauseButton {
   active: boolean
@@ -11,13 +11,10 @@ const PlayPauseButton: React.FC<IPlayPauseButton> = ({
   active,
   togglePlay,
 }) => {
-  const onClick = (e: SyntheticEvent) => {
-    togglePlay(e)
-  }
   return (
-    <IconButton onClick={onClick}>
+    <button className={styles.btn} onClick={togglePlay}>
       {active ? <Pause /> : <PlayArrow />}
-    </IconButton>
+    </button>
   )
 }
 

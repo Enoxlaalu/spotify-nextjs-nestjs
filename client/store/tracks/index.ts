@@ -1,6 +1,7 @@
 import { ITrack, ITracksState } from '@/types/tracks'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { HYDRATE } from 'next-redux-wrapper'
+import { API_URL } from '@/config/api'
 
 const initialState: ITracksState = {
   tracks: [],
@@ -9,7 +10,7 @@ const initialState: ITracksState = {
 export const fetchTracks = createAsyncThunk(
   'tracksReducer/fetchTracks',
   async () => {
-    const response = await fetch(`http://localhost:5000/tracks`)
+    const response = await fetch(`${API_URL}/tracks`)
     const json = await response.json()
 
     return json as ITrack[]
@@ -20,7 +21,7 @@ export const searchTracks = createAsyncThunk(
   'tracksReducer/searchTracks',
   async (query: string) => {
     const response = await fetch(
-      `http://localhost:5000/tracks/search?query=${query}`,
+      `${API_URL}/tracks/search?query=${encodeURIComponent(query)}`,
     )
     const json = await response.json()
 
@@ -30,8 +31,11 @@ export const searchTracks = createAsyncThunk(
 
 export const deleteTrack = createAsyncThunk(
   'tracksReducer/deleteTrack',
-  async (id: string) => {
-    await fetch(`http://localhost:5000/tracks/${id}`, { method: 'DELETE' })
+  async (id: string, { rejectWithValue }) => {
+    const response = await fetch(`${API_URL}/tracks/${id}`, {
+      method: 'DELETE',
+    })
+    if (!response.ok) return rejectWithValue('Failed to delete track')
     return id
   },
 )
