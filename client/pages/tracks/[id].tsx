@@ -28,7 +28,7 @@ const TrackPage: React.FC<ITrackPage> = ({ serverTrack }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          username: username.value,
+          userName: username.value,
           text: comment.value,
           trackId: track._id,
         }),

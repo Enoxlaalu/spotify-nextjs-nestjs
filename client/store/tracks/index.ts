@@ -9,23 +9,21 @@ const initialState: ITracksState = {
 
 export const fetchTracks = createAsyncThunk(
   'tracksReducer/fetchTracks',
-  async () => {
+  async (_, { rejectWithValue }) => {
     const response = await fetch(`${API_URL}/tracks`)
-    const json = await response.json()
-
-    return json as ITrack[]
+    if (!response.ok) return rejectWithValue('Failed to fetch tracks')
+    return (await response.json()) as ITrack[]
   },
 )
 
 export const searchTracks = createAsyncThunk(
   'tracksReducer/searchTracks',
-  async (query: string) => {
+  async (query: string, { rejectWithValue }) => {
     const response = await fetch(
       `${API_URL}/tracks/search?query=${encodeURIComponent(query)}`,
     )
-    const json = await response.json()
-
-    return json as ITrack[]
+    if (!response.ok) return rejectWithValue('Search failed')
+    return (await response.json()) as ITrack[]
   },
 )
 

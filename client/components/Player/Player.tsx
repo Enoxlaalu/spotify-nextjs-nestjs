@@ -25,7 +25,7 @@ const Player = () => {
     if (!audio) return
     if (pause) {
       dispatch(playTrack())
-      audio.play()
+      audio.play().catch(() => dispatch(pauseTrack()))
     } else {
       dispatch(pauseTrack())
       audio.pause()
@@ -48,7 +48,7 @@ const Player = () => {
         dispatch(setCurrentTime(Math.ceil(audio.currentTime)))
       }
       dispatch(playTrack())
-      audio.play()
+      audio.play().catch(() => dispatch(pauseTrack()))
     }
   }, [active]) // eslint-disable-line react-hooks/exhaustive-deps
 

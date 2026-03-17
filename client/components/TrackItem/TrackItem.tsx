@@ -6,9 +6,9 @@ import { Delete } from '@mui/icons-material'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import PlayPauseButton from '@/components/PlayPauseButton/PlayPauseButton'
-import { useAppDispatch } from '@/hooks/redux'
+import { useAppDispatch, useAppSelector } from '@/hooks/redux'
 import { API_URL } from '@/config/api'
-import { setActive, playTrack } from '@/store/player'
+import { setActive, playTrack, pauseTrack } from '@/store/player'
 import { deleteTrack } from '@/store/tracks'
 
 interface ITrackItem {
@@ -19,6 +19,7 @@ interface ITrackItem {
 const TrackItem: React.FC<ITrackItem> = ({ track, active = false }) => {
   const router = useRouter()
   const dispatch = useAppDispatch()
+  const { pause } = useAppSelector((state) => state.player)
 
   const onClick = () => router.push(`/tracks/${track._id}`)
 
@@ -30,8 +31,12 @@ const TrackItem: React.FC<ITrackItem> = ({ track, active = false }) => {
 
   const togglePlay = (e: SyntheticEvent) => {
     e.stopPropagation()
-    dispatch(setActive(track))
-    dispatch(playTrack())
+    if (active && !pause) {
+      dispatch(pauseTrack())
+    } else {
+      dispatch(setActive(track))
+      dispatch(playTrack())
+    }
   }
 
   return (

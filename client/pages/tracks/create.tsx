@@ -37,7 +37,7 @@ const Create = () => {
       formData.append('picture', image)
       formData.append('audio', audio)
 
-      fetch(`${API_URL}/tracks`, {
+      return fetch(`${API_URL}/tracks`, {
         method: 'POST',
         body: formData,
       })
