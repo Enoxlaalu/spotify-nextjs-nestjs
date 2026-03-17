@@ -7,7 +7,7 @@ const Index = () => {
     <Layout>
       <div className={styles.body}>
         <h1>Welcome!</h1>
-        <h3>This this the collection of the best tracks in the whole world!</h3>
+        <h3>This is the collection of the best tracks in the whole world!</h3>
       </div>
     </Layout>
   )

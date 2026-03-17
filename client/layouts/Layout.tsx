@@ -15,11 +15,6 @@ const pages = [
     title: 'Track List',
     path: '/tracks',
   },
-  {
-    id: 'albums',
-    title: 'Albums List',
-    path: '/albums',
-  },
 ]
 
 interface ILayout {

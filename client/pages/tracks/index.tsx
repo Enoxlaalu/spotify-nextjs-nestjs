@@ -1,7 +1,7 @@
 import Button from '@/components/Button/Button'
 import Layout from '@/layouts/Layout'
 import { useRouter } from 'next/router'
-import React, { ChangeEvent } from 'react'
+import React, { ChangeEvent, useCallback, useRef } from 'react'
 import TrackList from '@/components/TrackLIst/TrackList'
 import { wrapper } from '@/store'
 import { fetchTracks, searchTracks } from '@/store/tracks'
@@ -12,16 +12,22 @@ import styles from './styles.module.scss'
 const Index = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const onClick = () => router.push('/tracks/create')
 
   const { tracks } = useAppSelector((state) => state.tracksReducer)
 
-  const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const value = e.target.value
-
-    dispatch(searchTracks(value))
-  }
+  const onChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const value = e.target.value
+      if (debounceTimer.current) clearTimeout(debounceTimer.current)
+      debounceTimer.current = setTimeout(() => {
+        dispatch(searchTracks(value))
+      }, 300)
+    },
+    [dispatch],
+  )
 
   return (
     <Layout>

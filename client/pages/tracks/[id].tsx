@@ -64,7 +64,7 @@ const TrackPage: React.FC<ITrackPage> = ({ serverTrack }) => {
         <Button text="Add comment" onClick={addComment} />
         <div>
           {track.comments.map((c) => (
-            <div>
+            <div key={c._id}>
               <p>{c.username}</p>
               <span>{c.text}</span>
             </div>
@@ -78,12 +78,14 @@ const TrackPage: React.FC<ITrackPage> = ({ serverTrack }) => {
 export default TrackPage
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const res = await fetch('http://localhost:5000/tracks/' + params?.id)
-  const data = await res.json()
-
-  return {
-    props: {
-      serverTrack: data,
-    },
+  try {
+    const res = await fetch('http://localhost:5000/tracks/' + params?.id)
+    if (!res.ok) {
+      return { notFound: true }
+    }
+    const data = await res.json()
+    return { props: { serverTrack: data } }
+  } catch {
+    return { notFound: true }
   }
 }

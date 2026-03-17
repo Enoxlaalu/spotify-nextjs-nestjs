@@ -19,13 +19,21 @@ const Create = () => {
 
   const goBack = () => setActiveStep(activeStep - 1)
   const goForward = () => {
-    if (activeStep === 3) {
+    if (activeStep === 1) {
+      if (!trackName.value || !artist.value) return alert('Fill in track name and artist')
+      setActiveStep(2)
+    } else if (activeStep === 2) {
+      if (!image) return alert('Please upload a cover image')
+      setActiveStep(3)
+    } else if (activeStep === 3) {
+      if (!audio) return alert('Please upload an audio file')
+
       const formData = new FormData()
       formData.append('name', trackName.value)
       formData.append('artist', artist.value)
-      formData.append('comment', comment.value)
-      formData.append('picture', image as Blob)
-      formData.append('audio', audio as Blob)
+      formData.append('text', comment.value)
+      formData.append('picture', image)
+      formData.append('audio', audio)
 
       fetch('http://localhost:5000/tracks', {
         method: 'POST',
@@ -33,8 +41,6 @@ const Create = () => {
       })
         .then(() => router.push('/tracks'))
         .catch((err) => console.log(err))
-    } else {
-      setActiveStep(activeStep + 1)
     }
   }
 
@@ -45,7 +51,7 @@ const Create = () => {
           <div>
             <Input id="name" label="Track Name" {...trackName} />
             <Input id="artist" label="Artist Name" {...artist} />
-            <Input id="commnent" label="Comment" textarea={3} {...comment} />
+            <Input id="comment" label="Comment" textarea={3} {...comment} />
           </div>
         )
       case 2:

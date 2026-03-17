@@ -17,7 +17,7 @@ export const fetchTracks = createAsyncThunk(
 )
 
 export const searchTracks = createAsyncThunk(
-  'tracksReducer/fetchTracks',
+  'tracksReducer/searchTracks',
   async (query: string) => {
     const response = await fetch(
       `http://localhost:5000/tracks/search?query=${query}`,
@@ -25,6 +25,14 @@ export const searchTracks = createAsyncThunk(
     const json = await response.json()
 
     return json as ITrack[]
+  },
+)
+
+export const deleteTrack = createAsyncThunk(
+  'tracksReducer/deleteTrack',
+  async (id: string) => {
+    await fetch(`http://localhost:5000/tracks/${id}`, { method: 'DELETE' })
+    return id
   },
 )
 
@@ -44,7 +52,12 @@ const tracksSlice = createSlice({
     })
     builder.addCase(fetchTracks.fulfilled, (state, { payload }) => {
       state.tracks = payload
-      console.log('state', state)
+    })
+    builder.addCase(searchTracks.fulfilled, (state, { payload }) => {
+      state.tracks = payload
+    })
+    builder.addCase(deleteTrack.fulfilled, (state, { payload }) => {
+      state.tracks = state.tracks.filter((t) => t._id !== payload)
     })
   },
 })
