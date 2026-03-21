@@ -34,8 +34,8 @@ const Create = () => {
       formData.append('name', trackName.value)
       formData.append('artist', artist.value)
       formData.append('text', comment.value)
-      formData.append('picture', image)
-      formData.append('audio', audio)
+      if (image) formData.append('picture', image)
+      if (audio) formData.append('audio', audio)
 
       return fetch(`${API_URL}/tracks`, {
         method: 'POST',

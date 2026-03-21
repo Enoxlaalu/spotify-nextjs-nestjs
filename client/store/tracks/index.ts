@@ -41,15 +41,13 @@ export const deleteTrack = createAsyncThunk(
 const tracksSlice = createSlice({
   name: 'tracksReducer',
   initialState,
-  reducers: {
-    // fetchTracks: async () => {},
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(HYDRATE, (state, action) => {
       // console.log('HYDRATE', state, action.payload)
       return {
         ...state,
-        ...action.payload.tracksReducer,
+        ...(action as any).payload.tracksReducer,
       }
     })
     builder.addCase(fetchTracks.fulfilled, (state, { payload }) => {
